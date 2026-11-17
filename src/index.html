@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chada Tech Launch Tracker</title>
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/icon-32.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<meta name="theme-color" content="#042D6A">
+<meta name="description" content="Chada Tech launch tracker: daily deliverables for the team, 17 to 29 November.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#042D6A; --navy2:#0A3B85; --ink:#1A1F2B; --muted:#5B6578; --line:#E3E8F0;
+  --bg:#F3F5F9; --card:#FFFFFF; --tint:#EEF2F8; --eyebrow:#2F5FAE;
+  --done:#127A4B; --doneBg:#E3F4EA; --block:#B42318; --blockBg:#FDE8E6; --todo:#3D4A60; --todoBg:#EEF2F8;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px}
+
+/* header */
+header{background:var(--navy);color:#fff;padding:18px 0 20px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{height:30px;width:auto;display:block}
+.sync{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.12);color:#DCE6F7;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.sync i{width:7px;height:7px;border-radius:50%;background:#8FB0E3;display:inline-block}
+.sync.live i{background:#4ADE80}.sync.warn i{background:#FBBF24}.sync.err i{background:#F87171}
+h1{font-size:22px;line-height:1.2;margin:18px 0 4px;font-weight:800;letter-spacing:-.01em}
+.sub{color:#B9CBEA;font-size:13.5px;margin:0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,130px));gap:10px;margin-top:16px}
+.stat{background:rgba(255,255,255,.08);border-radius:10px;padding:10px 14px}
+.stat b{display:block;font-size:20px;font-weight:800}
+.stat span{font-size:12px;color:#B9CBEA}
+.bar{height:8px;background:rgba(255,255,255,.15);border-radius:99px;margin-top:14px;overflow:hidden}
+.bar>div{height:100%;background:#4ADE80;border-radius:99px;transition:width .3s}
+
+/* tabs */
+.tabs{display:flex;gap:6px;margin:16px 0 0;border-bottom:1px solid var(--line)}
+.tab{background:none;border:0;padding:10px 12px;font-weight:600;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected=true]{color:var(--navy);border-color:var(--navy)}
+.tab .n{font-size:11px;background:var(--blockBg);color:var(--block);border-radius:99px;padding:1px 7px;margin-left:4px}
+
+/* chips */
+.scroller{display:flex;gap:6px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:thin}
+.chip{flex:none;border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 11px;font-size:13px;font-weight:600;color:var(--ink);text-align:left}
+.chip small{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-top:1px}
+.chip[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip[aria-pressed=true] small{color:#B9CBEA}
+.chip.today{box-shadow:inset 0 -3px 0 #4ADE80}
+.people .chip{border-radius:999px;padding:6px 12px}
+
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 0 6px}
+.toolbar h2{font-size:16px;margin:0;font-weight:700}
+.toolbar .eyebrow{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--eyebrow)}
+.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--navy)}
+.btn:hover{background:var(--tint)}
+
+/* groups and rows */
+.group{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:10px 0;overflow:hidden}
+.ghead{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F7F8FB;border-bottom:1px solid var(--line)}
+.ghead b{font-size:14px}
+.ghead span{font-size:12px;color:var(--muted)}
+.row{padding:12px 14px;border-top:1px solid var(--line)}
+.ghead+.row{border-top:0}
+.row .t{font-size:14.5px;line-height:1.45;margin:0 0 9px}
+.row .t .day{font-size:11px;font-weight:700;color:var(--eyebrow);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:2px}
+.row.is-done .t{color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}
+.seg button{border:0;background:#fff;padding:8px 14px;font-size:13px;font-weight:600;color:var(--muted);min-width:76px;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button:hover:not(:disabled){background:var(--tint)}
+.seg button[aria-pressed=true][data-s=todo]{background:var(--todoBg);color:var(--todo)}
+.seg button[aria-pressed=true][data-s=done]{background:var(--done);color:#fff}
+.seg button[aria-pressed=true][data-s=blocked]{background:var(--block);color:#fff}
+.seg button:disabled{cursor:default}
+.meta{font-size:12px;color:var(--muted);margin-left:10px}
+.ctrl{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.note{margin-top:8px;display:flex;gap:6px}
+.note input{flex:1;font:inherit;font-size:13px;border:1px solid #F4B6AF;background:var(--blockBg);border-radius:8px;padding:7px 10px;color:var(--ink)}
+.note input:focus{outline:2px solid var(--block);outline-offset:0}
+.note input:disabled{opacity:.8}
+
+/* progress */
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-top:1px solid var(--line)}
+th{background:#F7F8FB;font-size:12px;color:var(--muted);font-weight:600;border-top:0}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.mini{height:6px;background:var(--tint);border-radius:99px;overflow:hidden;min-width:70px}
+.mini>div{height:100%;background:var(--done)}
+.tag{font-size:11px;color:var(--muted);display:block}
+.red{color:var(--block);font-weight:700}
+
+.empty{background:#fff;border:1px dashed var(--line);border-radius:12px;padding:28px;text-align:center;color:var(--muted);font-size:14px;margin:10px 0}
+.notice{background:#FFF7E6;border:1px solid #F5D9A0;color:#7A5200;border-radius:10px;padding:10px 12px;font-size:13px;margin:12px 0 0}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw}
+.toast.on{opacity:1}
+dialog{border:0;border-radius:14px;padding:0;max-width:520px;width:92vw}
+dialog::backdrop{background:rgba(4,45,106,.35)}
+.dlg{padding:18px}
+.dlg h3{margin:0 0 8px;font-size:16px}
+.dlg textarea{width:100%;height:260px;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:10px}
+.dlg .acts{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:26px 0 34px}
+@media (max-width:520px){
+  .seg{display:flex;width:100%}.seg button{flex:1;min-width:0;padding:10px 6px}
+  .meta{margin:6px 0 0;width:100%}
+  h1{font-size:20px}
+  .stats{grid-template-columns:repeat(4,1fr);gap:6px}.stat{padding:8px 10px}.stat b{font-size:17px}.stat span{font-size:11px}
+  .hide-s{display:none}
+}
+
+.editor{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13px;color:#DCE6F7}
+.link{background:none;border:0;padding:0;color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:3px;font-size:13px}
+.seg.locked button:not([aria-pressed=true]){color:#8B95A7}
+.form label{display:block;font-size:13px;font-weight:600;margin:12px 0 5px}
+.form input{width:100%;font:inherit;font-size:15px;border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.form input:focus{outline:2px solid var(--navy);outline-offset:0}
+.form .err{color:var(--block);font-size:13px;min-height:18px;margin:8px 0 0}
+.form p.help{font-size:13px;color:var(--muted);margin:0}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.primary:hover{background:var(--navy2)}
+.btn:disabled{opacity:.6}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top"><!--LOGO--><div class="sync" id="sync"><i></i><span>Connecting…</span></div></div>
+    <h1>Launch tracker</h1>
+    <p class="sub">17 to 29 November · Tap To do, Done or Blocked. Everyone sees the change at once.</p>
+    <div class="stats">
+      <div class="stat"><b id="sDone">0</b><span>Done</span></div>
+      <div class="stat"><b id="sBlocked">0</b><span>Blocked</span></div>
+      <div class="stat"><b id="sTodo">0</b><span>To do</span></div>
+      <div class="stat"><b id="sPct">0%</b><span>of <span id="sTotal">0</span> tasks</span></div>
+    </div>
+    <div class="bar"><div id="bar" style="width:0"></div></div>
+    <div class="editor" id="editor"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="notice"></div>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-view="day" aria-selected="true">By day</button>
+    <button class="tab" role="tab" data-view="blocked" aria-selected="false">Blocked <span class="n" id="tBlocked" hidden>0</span></button>
+    <button class="tab" role="tab" data-view="progress" aria-selected="false">Progress</button>
+  </div>
+  <div id="dayBar" class="scroller" aria-label="Day"></div>
+  <div id="peopleBar" class="scroller people" aria-label="Person"></div>
+  <div id="view"></div>
+</main>
+<footer>Chada Tech · Anyone with the link can view. Updating needs the editor passcode.</footer>
+
+<dialog id="unlock"><form class="dlg form" id="unlockForm" autocomplete="on">
+<h3>Unlock to update statuses</h3>
+<p class="help">You only do this once on this phone or laptop.</p>
+<label for="uName">Your name</label><input id="uName" name="name" maxlength="40" placeholder="e.g. Ope" autocomplete="given-name">
+<label for="uPin">Editor passcode</label><input id="uPin" name="passcode" type="password" autocomplete="current-password">
+<div class="err" id="uErr" role="alert"></div>
+<div class="acts"><button type="button" class="btn" id="uCancel">Cancel</button><button type="submit" class="btn primary" id="uGo">Unlock</button></div>
+</form></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<dialog id="dlg"><div class="dlg"><h3>Copy this into the team group</h3><textarea id="dlgText" readonly></textarea><div class="acts"><button class="btn" id="dlgCopy">Copy</button><button class="btn" id="dlgClose">Close</button></div></div></dialog>
+
+<script src="vendor/supabase.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
