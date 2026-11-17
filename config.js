@@ -3,6 +3,6 @@
 // anon / publishable key. Both are safe to put on a public site: the database
 // only lets people change a status through the editor passcode.
 window.TRACKER_CONFIG = {
-  supabaseUrl: "",   // e.g. "https://abcdefghijklm.supabase.co"
-  supabaseKey: ""    // e.g. "sb_publishable_..." or the long "eyJ..." anon key
+  supabaseUrl: "https://gywnmypsydevasufssqh.supabase.co",
+  supabaseKey: "sb_publishable_paJZhImIKu7z0XzyKne22Q_cH8QWoeQ"
 };
